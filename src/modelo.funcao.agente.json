@@ -1,0 +1,24 @@
+{
+    "start": {
+        "type": "message",
+        "text": "Olá! Quer orçamento?",
+        "next": "menu"
+    },
+    "menu": {
+        "type": "options",
+        "text": "Digite 1 para SIM, 2 para NÃO",
+        "options": {
+            "1": "orcamento",
+            "2": "fim"
+        }
+    },
+    "orcamento": {
+        "type": "message",
+        "text": "Me diga seu nome",
+        "next": "fim"
+    },
+    "fim": {
+        "type": "message",
+        "text": "Obrigado!"
+    }
+}

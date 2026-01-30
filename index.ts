@@ -2,7 +2,6 @@ import 'dotenv/config'
 import routes from "./src/routes/route";
 import { connectRabbit } from "./src/config/infra/rabbitmg";
 import { startTaskWorkerCampaign } from './src/services/workers/task.worker.campaign';
-import { startTaskWorkerReceptive } from './src/services/workers/task.worker.receptive';
 
 const PORT = process.env.PORT || 3000;
 
@@ -10,7 +9,6 @@ async function start() {
   try {
     await connectRabbit();
     await startTaskWorkerCampaign();
-    await startTaskWorkerReceptive();
   } catch (e) {
     console.log(e)
   } finally {

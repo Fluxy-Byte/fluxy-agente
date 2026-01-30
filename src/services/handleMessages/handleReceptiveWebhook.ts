@@ -7,7 +7,7 @@ import { sendMenssagem } from "../../adapters/meta/sendMenssage";
 import { getAudio } from "../../adapters/meta/getAudio";
 import { Message } from "../../interfaces/MetaWebhook";
 
-export async function handleReceptiveWebhook(task: MetaWebhook) {
+export async function HandleReceptiveWebhook(task: MetaWebhook) {
     try {
         console.log('🛠 Processando webhook direto');
 
@@ -32,12 +32,6 @@ export async function handleReceptiveWebhook(task: MetaWebhook) {
             console.log(`ID: ${idMensagem} - TYPE: ${tipoDaMensagem} - MSG: ${mensagemRecebida}`);
 
             if (idMensagem && numeroDoContato) {
-                // let mensagem = "Olá! 😊 No momento, ainda não consigo receber mensagens em áudio, imagens, vídeos ou documentos. Poderia me enviar sua dúvida por escrito, por favor? 😊"
-                // await sendMenssagem({
-                //     mensagem,
-                //     idMensagem,
-                //     numeroDoContato
-                // })
 
                 if (tipoDaMensagem === "audio") {
                     await tratarMensagensDeAudio(
@@ -112,16 +106,16 @@ async function tratarMensagensDeAudio(dados: Message, idMensagem: string, numero
             console.log(resultgGetAudio)
             if (resultgGetAudio.status && resultgGetAudio.data) {
                 mensagem = (await getAnswer(resultgGetAudio.data, numeroDoContato)).data;
-                await sendBodyToMenssage(idMensagem, numeroDoContato, mensagem);
+                await sendBodyToMenssage(idMensagem, numeroDoContato, mensagem, "text");
                 return;
             }
 
-            await sendBodyToMenssage(idMensagem, numeroDoContato, "Percebi que você enviou um áudio, mas no momento só consigo receber respostas em texto. Poderia, por favor, enviar a mensagem por escrito? 😅");
+            await sendBodyToMenssage(idMensagem, numeroDoContato, "Percebi que você enviou um áudio, mas no momento só consigo receber respostas em texto. Poderia, por favor, enviar a mensagem por escrito? 😅", "text");
             return;
         }
     } catch (e: any) {
         console.log(e);
-        await sendBodyToMenssage(idMensagem, numeroDoContato, "Percebi que você enviou um áudio, mas no momento só consigo receber respostas em texto. Poderia, por favor, enviar a mensagem por escrito? 😅");
+        await sendBodyToMenssage(idMensagem, numeroDoContato, "Percebi que você enviou um áudio, mas no momento só consigo receber respostas em texto. Poderia, por favor, enviar a mensagem por escrito? 😅", "text");
     }
 }
 
@@ -136,29 +130,30 @@ async function tratarMensagensDeTexto(dados: Message, idMensagem: string, numero
             mensagem = "Ola eu sou a *Fly*, no momento estou em construção e não consegui encontrar a mensagem que me enviou acima. Poderia reformular ela por favor?"
         }
 
-        await sendBodyToMenssage(idMensagem, numeroDoContato, mensagem);
+        await sendBodyToMenssage(idMensagem, numeroDoContato, mensagem, "text");
         return;
     } catch (e: any) {
         console.log(e);
-        await sendBodyToMenssage(idMensagem, numeroDoContato, "No momento não consegui processar sua solicitação. Poderia tentar novamente, por favor? 😅");
+        await sendBodyToMenssage(idMensagem, numeroDoContato, "No momento não consegui processar sua solicitação. Poderia tentar novamente, por favor? 😅", "text");
         return;
     }
 }
 
-async function sendBodyToMenssage(idMensagem: string, numeroDoContato: string, consultaResposta: string) {
+async function sendBodyToMenssage(idMensagem: string, numeroDoContato: string, consultaResposta: string, typeMessage: string) {
     try {
 
         const listaDeRespostas = await splitText(consultaResposta);
 
         for (const mensagem of listaDeRespostas) {
 
-            const response = await sendMenssagem({
-                mensagem,
-                idMensagem,
-                numeroDoContato
-            })
+            const payload = {
+                "payload": mensagem,
+                "id_conversa": idMensagem,
+                "numero_usuario": numeroDoContato,
+                "tipo_mensagem": typeMessage
+            }
 
-            console.log(response.status)
+            await createTaskReceptive(payload)
 
             await new Promise(r => setTimeout(r, 20000))
         }
@@ -180,4 +175,17 @@ async function splitText(text: string, limit = 3800) {
     }
     if (current) parts.push(current)
     return parts
+}
+
+
+async function createTaskReceptive(task: any) {
+    const nomeFila = process.env.NOME_FILA_RABBITMQ ?? "fluxy";
+    const channel = getConectionTheChannel()
+    console.log(`🟢 Criou na fila recptive`);
+    console.log(JSON.stringify(task))
+    const queue = `task.${nomeFila}.receptive.create`
+    channel.sendToQueue(queue, Buffer.from(JSON.stringify(task)), {
+        persistent: true
+    })
+    return;
 }
