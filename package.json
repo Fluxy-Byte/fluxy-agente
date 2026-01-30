@@ -1,0 +1,42 @@
+{
+  "name": "poup-be",
+  "version": "1.0.0",
+  "description": "Backend para recebimento e envio de mensagem",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon --watch src --exec ts-node index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GabrielLS88/poup-be.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GabrielLS88/poup-be/issues"
+  },
+  "homepage": "https://github.com/GabrielLS88/poup-be#readme",
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "amqplib": "^0.10.9",
+    "axios": "^1.13.2",
+    "axios-retry": "^4.5.0",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "openai": "^6.16.0",
+    "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "@types/amqplib": "^0.10.8",
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.0.3",
+    "@types/swagger-ui-express": "^4.1.8",
+    "nodemon": "^3.1.11",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.9.3"
+  }
+}
