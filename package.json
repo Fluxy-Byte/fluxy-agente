@@ -1,5 +1,5 @@
 {
-  "name": "poup-be",
+  "name": "fluxy-agente",
   "version": "1.0.0",
   "description": "Backend para recebimento e envio de mensagem",
   "main": "index.js",
@@ -10,15 +10,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/GabrielLS88/poup-be.git"
+    "url": "git+https://github.com/Fluxy-Byte/fluxy-agente"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/GabrielLS88/poup-be/issues"
+    "url": "https://github.com/Fluxy-Byte/fluxy-agente/issues"
   },
-  "homepage": "https://github.com/GabrielLS88/poup-be#readme",
+  "homepage": "https://github.com/Fluxy-Byte/fluxy-agente#readme",
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
     "amqplib": "^0.10.9",
