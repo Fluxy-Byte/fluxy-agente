@@ -3,6 +3,7 @@
 import { getConectionTheChannel } from '../../config/infra/rabbitmg';
 
 export async function createTaskReceptive(task: any) {
+    console.log(task)
     const nomeFila = process.env.NOME_FILA_RABBITMQ ?? "fluxy";
     const channel = getConectionTheChannel()
     console.log(`🟢 Criou na fila recptive`);

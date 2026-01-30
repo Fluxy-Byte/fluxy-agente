@@ -1,9 +1,8 @@
 // Onde o worker executa
 
-import { getConectionTheChannel } from '../../config/infra/rabbitmg';
+import { createTaskReceptive } from '../../services/producers/task.producer.receptive';
 import { MetaWebhook } from '../../interfaces/MetaWebhook';
 import { getAnswer } from '../../adapters/agent/conectionAgente';
-import { sendMenssagem } from "../../adapters/meta/sendMenssage";
 import { getAudio } from "../../adapters/meta/getAudio";
 import { Message } from "../../interfaces/MetaWebhook";
 
@@ -48,11 +47,12 @@ export async function HandleReceptiveWebhook(task: MetaWebhook) {
                     );
                 } else {
                     let mensagem = "Olá! 😊 No momento, ainda não consigo receber mensagens em áudio, imagens, vídeos ou documentos. Poderia me enviar sua dúvida por escrito, por favor? 😊"
-                    await sendMenssagem({
-                        mensagem,
+                    await sendBodyToMenssage(
                         idMensagem,
-                        numeroDoContato
-                    })
+                        numeroDoContato,
+                        mensagem,
+                        "text"
+                    )
                 }
 
             } else {
@@ -71,21 +71,21 @@ export async function HandleReceptiveWebhook(task: MetaWebhook) {
 
             contatosAtualizados.forEach((c, i) => {
                 let status = `${i} - Numero: ${c.recipient_id} - Status: ${c.status} - Serviço: ${c.pricing?.type} | ${c.pricing?.category}`;
-                console.log(status);
+                //console.log(status);
             });
 
-            console.log('💜 Atualização de status concluída');
+            //console.log('💜 Atualização de status concluída');
         }
 
         // ======================
         // OUTROS
         // ======================
         else {
-            console.log(`❤️ Payload não reconhecido`);
+            //console.log(`❤️ Payload não reconhecido`);
         }
 
     } catch (err) {
-        console.log('❌ Erro ao processar webhook');
+       // console.log('❌ Erro ao processar webhook');
         console.error(err);
     }
 }
@@ -175,17 +175,4 @@ async function splitText(text: string, limit = 3800) {
     }
     if (current) parts.push(current)
     return parts
-}
-
-
-async function createTaskReceptive(task: any) {
-    const nomeFila = process.env.NOME_FILA_RABBITMQ ?? "fluxy";
-    const channel = getConectionTheChannel()
-    console.log(`🟢 Criou na fila recptive`);
-    console.log(JSON.stringify(task))
-    const queue = `task.${nomeFila}.receptive.create`
-    channel.sendToQueue(queue, Buffer.from(JSON.stringify(task)), {
-        persistent: true
-    })
-    return;
 }
