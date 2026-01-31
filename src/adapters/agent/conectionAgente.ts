@@ -15,8 +15,6 @@ export const getAnswer = async (mensagem: string, numeroDoContato: string) => {
       }
     )
 
-    console.log(data)
-
     return {
       data: status == 200 ? data?.output : "Tivemos um erro nesse exato momento, por favor tente novemente!",
       status: status

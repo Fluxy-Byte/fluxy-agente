@@ -3,10 +3,10 @@
 import { createTaskReceptive } from '../../services/producers/task.producer.receptive';
 import { MetaWebhook } from '../../interfaces/MetaWebhook';
 import { getAnswer } from '../../adapters/agent/conectionAgente';
-import { getAudio } from "../../adapters/meta/getAudio";
+import { getAudio } from "../../adapters/microsservico/getAudio";
 import { Message } from "../../interfaces/MetaWebhook";
 import { getConectionTheChannel } from '../../config/infra/rabbitmg';
-import { sendMenssagem } from '../../adapters/meta/sendMenssage';
+import { sendMenssagem } from '../../adapters/microsservico/sendMenssage';
 
 export async function startTaskWorkerReceptive() {
   const channel = getConectionTheChannel()

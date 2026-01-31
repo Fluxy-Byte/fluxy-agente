@@ -1,11 +1,9 @@
-// Onde o worker executa
 
-import { createTaskReceptive } from '../../services/producers/task.producer.receptive';
 import { MetaWebhook } from '../../interfaces/MetaWebhook';
 import { getAnswer } from '../../adapters/agent/conectionAgente';
-import { getAudio } from "../../adapters/meta/getAudio";
+import { getAudio } from "../../adapters/microsservico/getAudio";
 import { Message } from "../../interfaces/MetaWebhook";
-import { sendMenssagem } from "../../adapters/meta/sendMenssage";
+import { sendMenssagem } from "../../adapters/microsservico/sendMenssage";
 
 export async function HandleReceptiveWebhook(task: MetaWebhook) {
     try {
@@ -72,21 +70,21 @@ export async function HandleReceptiveWebhook(task: MetaWebhook) {
 
             contatosAtualizados.forEach((c, i) => {
                 let status = `${i} - Numero: ${c.recipient_id} - Status: ${c.status} - Serviço: ${c.pricing?.type} | ${c.pricing?.category}`;
-                //console.log(status);
+                console.log(status);
             });
 
-            //console.log('💜 Atualização de status concluída');
+            console.log('💜 Atualização de status concluída');
         }
 
         // ======================
         // OUTROS
         // ======================
         else {
-            //console.log(`❤️ Payload não reconhecido`);
+            console.log(`❤️ Payload não reconhecido`);
         }
 
     } catch (err) {
-        // console.log('❌ Erro ao processar webhook');
+        console.log('❌ Erro ao processar webhook');
         console.error(err);
     }
 }
@@ -104,7 +102,7 @@ async function tratarMensagensDeAudio(dados: Message, idMensagem: string, numero
                 data: string
             }
             const resultgGetAudio: ReseultGetAudio = await getAudio(idAudio);
-            console.log(resultgGetAudio)
+            
             if (resultgGetAudio.status && resultgGetAudio.data) {
                 mensagem = (await getAnswer(resultgGetAudio.data, numeroDoContato)).data;
                 await sendBodyToMenssage(idMensagem, numeroDoContato, mensagem, "text");
