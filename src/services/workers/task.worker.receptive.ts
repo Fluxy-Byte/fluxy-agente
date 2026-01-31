@@ -92,18 +92,20 @@ export async function startTaskWorkerReceptive() {
 
         contatosAtualizados.forEach((c, i) => {
           let status = `${i} - Numero: ${c.recipient_id} - Status: ${c.status} - Serviço: ${c.pricing?.type} | ${c.pricing?.category}`;
-          //console.log(status);
+          console.log(status);
         });
 
-        //console.log('💜 Atualização de status concluída');
+        console.log('💜 Atualização de status concluída');
       }
 
       // ======================
       // OUTROS
       // ======================
       else {
-        //console.log(`❤️ Payload não reconhecido`);
+        console.log(`❤️ Payload não reconhecido`);
       }
+
+      channel.ack(msg);
 
     } catch (err) {
       // console.log('❌ Erro ao processar webhook');
