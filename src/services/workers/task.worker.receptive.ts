@@ -5,7 +5,7 @@ import { MetaWebhook } from '../../interfaces/MetaWebhook';
 import { getAnswer } from '../../adapters/agent/conectionAgente';
 import { getAudio } from "../../adapters/meta/getAudio";
 import { Message } from "../../interfaces/MetaWebhook";
-import { getConectionTheChannel } from '@/config/infra/rabbitmg';
+import { getConectionTheChannel } from '../../config/infra/rabbitmg';
 
 export async function startTaskWorkerReceptive() {
   const channel = getConectionTheChannel()
