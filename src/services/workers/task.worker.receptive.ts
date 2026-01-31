@@ -6,6 +6,7 @@ import { getAnswer } from '../../adapters/agent/conectionAgente';
 import { getAudio } from "../../adapters/meta/getAudio";
 import { Message } from "../../interfaces/MetaWebhook";
 import { getConectionTheChannel } from '../../config/infra/rabbitmg';
+import { sendMenssagem } from '../../adapters/meta/sendMenssage';
 
 export async function startTaskWorkerReceptive() {
   const channel = getConectionTheChannel()
@@ -166,14 +167,7 @@ async function sendBodyToMenssage(idMensagem: string, numeroDoContato: string, c
 
     for (const mensagem of listaDeRespostas) {
 
-      const payload = {
-        "payload": mensagem,
-        "id_conversa": idMensagem,
-        "numero_usuario": numeroDoContato,
-        "tipo_mensagem": typeMessage
-      }
-
-      await createTaskReceptive(payload)
+      const payload = await sendMenssagem({ mensagem, idMensagem, numeroDoContato });
 
       await new Promise(r => setTimeout(r, 20000))
     }
