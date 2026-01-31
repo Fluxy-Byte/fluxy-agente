@@ -4,6 +4,7 @@ import { BodyReqCampaing } from "../interfaces/BodySendToCampaing";
 import { createTaskCampaign } from '../services/producers/task.producer.campaign'; // Criar task para campanhas
 import { sendMenssageSemId } from "../adapters/meta/sendMenssageSemId";
 import { createTaskReceptive } from "../services/producers/task.producer.receptive";
+import { HandleReceptiveWebhook } from "../services/handleMessages/handleReceptiveWebhook";
 const routes = express();
 
 routes.use(express.json());
@@ -39,7 +40,8 @@ routes.get("/api/v1/receptive/webhook", async (req, res) => {
 routes.post("/api/v1/receptive/webhook", async (req, res) => {
   try {
     res.status(200).end()
-    await createTaskReceptive(req.body);
+    // await createTaskReceptive(req.body);
+    await HandleReceptiveWebhook(req.body)
     return
   } catch (e) {
     console.log("❌ Erro ao tentar criar mensagem na fila POST-/api/v1/receptive/webhook: " + e)

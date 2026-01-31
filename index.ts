@@ -10,7 +10,7 @@ async function start() {
   try {
     await connectRabbit();
     await startTaskWorkerCampaign();
-    await startTaskWorkerReceptive();
+    // await startTaskWorkerReceptive();
   } catch (e) {
     console.log(e)
   } finally {

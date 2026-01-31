@@ -5,6 +5,7 @@ import { MetaWebhook } from '../../interfaces/MetaWebhook';
 import { getAnswer } from '../../adapters/agent/conectionAgente';
 import { getAudio } from "../../adapters/meta/getAudio";
 import { Message } from "../../interfaces/MetaWebhook";
+import { sendMenssagem } from "../../adapters/meta/sendMenssage";
 
 export async function HandleReceptiveWebhook(task: MetaWebhook) {
     try {
@@ -85,7 +86,7 @@ export async function HandleReceptiveWebhook(task: MetaWebhook) {
         }
 
     } catch (err) {
-       // console.log('❌ Erro ao processar webhook');
+        // console.log('❌ Erro ao processar webhook');
         console.error(err);
     }
 }
@@ -146,14 +147,11 @@ async function sendBodyToMenssage(idMensagem: string, numeroDoContato: string, c
 
         for (const mensagem of listaDeRespostas) {
 
-            const payload = {
-                "payload": mensagem,
-                "id_conversa": idMensagem,
-                "numero_usuario": numeroDoContato,
-                "tipo_mensagem": typeMessage
-            }
-
-            await createTaskReceptive(payload)
+            await sendMenssagem({
+                mensagem,
+                idMensagem,
+                numeroDoContato
+            })
 
             await new Promise(r => setTimeout(r, 20000))
         }
