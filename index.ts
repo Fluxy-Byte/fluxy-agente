@@ -9,8 +9,8 @@ const PORT = process.env.PORT || 3000;
 async function start() {
   try {
     await connectRabbit();
-    startTaskWorkerCampaign();
-    startTaskWorkerReceptive();
+    await startTaskWorkerCampaign();
+    await startTaskWorkerReceptive();
   } catch (e) {
     console.log(e)
   } finally {
