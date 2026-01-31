@@ -85,50 +85,6 @@
 //   }
 // };
 
-import axios from "axios";
-
-export const sendMenssagem = async (props: { mensagem: string, idMensagem: string, numeroDoContato: string }) => {
-    try {
-
-        console.log(`Mensagem gerada pela IA: ${props.mensagem}`)
-        // const tokenMeta = process.env.TOKEN_META;
-        const urlMeta = "https://graph.facebook.com/v22.0/872884792582393/messages";
-        const responseSend = await axios.post(urlMeta,
-            {
-                "messaging_product": "whatsapp",
-                "recipient_type": "individual",
-                "to": props.numeroDoContato,
-                "context": {
-                    "message_id": props.idMensagem
-                },
-                "type": "text",
-                "text": {
-                    "preview_url": false,
-                    "body": props.mensagem
-                }
-            },
-            {
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer EAAnnMWg4ZAq8BQhrPuSuNAsoOqtRnoCaCSqNiHOaXPqrqOGwLrHV5TiMfapxKWbhxYZAn1yqEPO6WIrSndoZADRnHnsUImUYGnIa0ZC7qcjCfozoUrbT1JYFfkRVXxRqmCd3XiCpofZCFhZBJPgeMHE8hXLhL0qlHDfMbl5jMAj0ZAcdhT1XIsf08tUMKiklP00hwZDZD`
-                }
-            }
-        )
-
-        return {
-            status: responseSend.status,
-            data: JSON.stringify(responseSend.data)
-        }
-
-    } catch (e) {
-        console.log(`❌ Erro ao requisitar meta message: ${JSON.stringify(e)}`)
-        return {
-            status: 500,
-            data: JSON.stringify(e)
-        }
-    }
-}
-
 // import axios from "axios";
 
 // export const sendMenssagem = async (props: { mensagem: string, idMensagem: string, numeroDoContato: string }) => {
@@ -136,12 +92,26 @@ export const sendMenssagem = async (props: { mensagem: string, idMensagem: strin
 
 //         console.log(`Mensagem gerada pela IA: ${props.mensagem}`)
 //         // const tokenMeta = process.env.TOKEN_META;
-//         const urlMeta = "https://fluxy-microservice-send-mensage-meta.egnehl.easypanel.host/send-message";
+//         const urlMeta = "https://graph.facebook.com/v22.0/872884792582393/messages";
 //         const responseSend = await axios.post(urlMeta,
 //             {
-//                 "mensagem": props.mensagem,
-//                 "idMensagem": props.idMensagem,
-//                 "numeroDoContato": props.numeroDoContato
+//                 "messaging_product": "whatsapp",
+//                 "recipient_type": "individual",
+//                 "to": props.numeroDoContato,
+//                 "context": {
+//                     "message_id": props.idMensagem
+//                 },
+//                 "type": "text",
+//                 "text": {
+//                     "preview_url": false,
+//                     "body": props.mensagem
+//                 }
+//             },
+//             {
+//                 headers: {
+//                     "Content-Type": "application/json",
+//                     "Authorization": `Bearer EAAnnMWg4ZAq8BQhrPuSuNAsoOqtRnoCaCSqNiHOaXPqrqOGwLrHV5TiMfapxKWbhxYZAn1yqEPO6WIrSndoZADRnHnsUImUYGnIa0ZC7qcjCfozoUrbT1JYFfkRVXxRqmCd3XiCpofZCFhZBJPgeMHE8hXLhL0qlHDfMbl5jMAj0ZAcdhT1XIsf08tUMKiklP00hwZDZD`
+//                 }
 //             }
 //         )
 
@@ -158,3 +128,33 @@ export const sendMenssagem = async (props: { mensagem: string, idMensagem: strin
 //         }
 //     }
 // }
+
+import axios from "axios";
+
+export const sendMenssagem = async (props: { mensagem: string, idMensagem: string, numeroDoContato: string }) => {
+    try {
+
+        console.log(`Mensagem gerada pela IA: ${props.mensagem}`)
+        // const tokenMeta = process.env.TOKEN_META;
+        const urlMeta = "https://fluxy-microservice-send-mensage-meta.egnehl.easypanel.host/send-message";
+        const responseSend = await axios.post(urlMeta,
+            {
+                "mensagem": props.mensagem,
+                "idMensagem": props.idMensagem,
+                "numeroDoContato": props.numeroDoContato
+            }
+        )
+
+        return {
+            status: responseSend.status,
+            data: JSON.stringify(responseSend.data)
+        }
+
+    } catch (e) {
+        console.log(`❌ Erro ao requisitar meta message: ${JSON.stringify(e)}`)
+        return {
+            status: 500,
+            data: JSON.stringify(e)
+        }
+    }
+}
