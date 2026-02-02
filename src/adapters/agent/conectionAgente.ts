@@ -1,5 +1,10 @@
 import axios from "axios";
 
+export interface BodyResutl {
+  output: string
+  nivel_de_cliente: string
+}
+
 export const getAnswer = async (mensagem: string, numeroDoContato: string) => {
   try {
 
@@ -15,15 +20,23 @@ export const getAnswer = async (mensagem: string, numeroDoContato: string) => {
       }
     )
 
+    const result: BodyResutl = status ? data : {
+      output: "Tivemos um erro nesse exato momento, por favor tente novemente!",
+      nivel_de_cliente: "false"
+    };
+
     return {
-      data: status == 200 ? data?.output : "Tivemos um erro nesse exato momento, por favor tente novemente!",
+      data: result,
       status: status
     }
 
   } catch (e: any) {
     console.log(`❌ Erro ao requisitar germini: ${JSON.stringify(e)}`)
     return {
-      data: "Tivemos um erro nesse exato momento, por favor tente novemente!",
+      data: {
+        output: "Tivemos um erro nesse exato momento, por favor tente novemente!",
+        nivel_de_cliente: "false"
+      },
       status: 500
     }
   }

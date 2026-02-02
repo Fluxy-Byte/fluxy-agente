@@ -1,18 +1,29 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
+
     "paths": {
-      "@/*": [
-        "src/*"
-      ]
+      "@/*": ["src/*"]
     },
+
     "target": "ES2020",
     "module": "commonjs",
+
     "rootDir": "./",
     "outDir": "./dist",
+
     "strict": true,
-    "esModuleInterop": true
+
+    "esModuleInterop": true,
+
+    // 👇 ESSENCIAIS PRO TYPEORM
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "useDefineForClassFields": false,
+
+    "skipLibCheck": true
   },
+
   "include": [
     "src/**/*",
     "index.ts"

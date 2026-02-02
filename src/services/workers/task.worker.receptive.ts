@@ -1,12 +1,11 @@
 // Onde o worker executa
 
-import { createTaskReceptive } from '../../services/producers/task.producer.receptive';
 import { MetaWebhook } from '../../interfaces/MetaWebhook';
 import { getAnswer } from '../../adapters/agent/conectionAgente';
 import { getAudio } from "../../adapters/microsservico/getAudio";
 import { Message } from "../../interfaces/MetaWebhook";
 import { getConectionTheChannel } from '../../config/infra/rabbitmg';
-import { sendMenssagem } from '../../adapters/microsservico/sendMenssage';
+import { validarCadastroDoContato } from '../../config/database/entities/contatos'
 
 export async function startTaskWorkerReceptive() {
   const channel = getConectionTheChannel()
@@ -26,61 +25,57 @@ export async function startTaskWorkerReceptive() {
 
   channel.consume(queue, async msg => {
     if (!msg) return
-
-    const task: MetaWebhook = JSON.parse(msg.content.toString())
+    const body = JSON.parse(msg.content.toString())
+    const task: MetaWebhook = body.bodyTask
+    const repostaParaMensagemEnviada = body.resposta
     try {
-      console.log('🛠 Processando webhook direto');
+      console.log("\n")
+      console.log('🛠 Processando webhook de alimentação de base');
 
       const mensagem = task.entry[0];
       const dadosDaMesagen = mensagem.changes[0];
 
-      console.log("\n\n");
+      console.log("\n");
 
-      // ======================
-      // MENSAGENS
-      // ======================
       if (dadosDaMesagen.value.messages) {
 
         const bodyDaMenssage = dadosDaMesagen.value.messages;
+        const profileContact = dadosDaMesagen.value.contacts?.[0];
         const dadosDoBodyDaMensagem = bodyDaMenssage?.[0];
 
         const mensagemRecebida = dadosDoBodyDaMensagem?.text?.body || false;
-        const tipoDaMensagem = dadosDoBodyDaMensagem?.type || false;
+        const tipoDaMensagem = dadosDoBodyDaMensagem?.type || false; // Pode ser text ou audio
+        const timesTampMensagem = dadosDoBodyDaMensagem.timestamp; // Pode ser text ou audio
         const idMensagem = dadosDoBodyDaMensagem?.id || false;
         const numeroDoContato = dadosDoBodyDaMensagem?.from || false;
 
-        console.log(`ID: ${idMensagem} - TYPE: ${tipoDaMensagem} - MSG: ${mensagemRecebida}`);
-
         if (idMensagem && numeroDoContato) {
 
-          if (tipoDaMensagem === "audio") {
-            await tratarMensagensDeAudio(
-              dadosDoBodyDaMensagem,
-              idMensagem,
-              numeroDoContato
-            );
+          let respostaParaMensagem = repostaParaMensagemEnviada ?? "Olá! 😊 No momento, ainda não consigo receber mensagens em áudio, imagens, vídeos ou documentos. Poderia me enviar sua dúvida por escrito, por favor? 😊";
 
-          } else if (tipoDaMensagem === "text") {
-            await tratarMensagensDeTexto(
-              dadosDoBodyDaMensagem,
-              idMensagem,
-              numeroDoContato
-            );
-          } else {
-            let mensagem = "Olá! 😊 No momento, ainda não consigo receber mensagens em áudio, imagens, vídeos ou documentos. Poderia me enviar sua dúvida por escrito, por favor? 😊"
-            await sendBodyToMenssage(
-              idMensagem,
-              numeroDoContato,
-              mensagem,
-              "text"
-            )
+          let nameContact = profileContact?.profile.name ?? "Sem nome no contato";
+          let id_whats = profileContact?.wa_id ?? "false";
+
+          const contatoBase: number | boolean = await validarCadastroDoContato(nameContact, numeroDoContato, id_whats);
+
+          if (contatoBase != false) {
+
+            // Modelo de como deve ser enviado para banco
+
+            const dadosMensagem = {
+              id_user: contatoBase,
+              type_message: tipoDaMensagem,
+              question_message: mensagemRecebida,
+              answer_message: respostaParaMensagem,
+              date_recept_message: new Date(Number(timesTampMensagem) * 1000),
+              date_send_message: new Date(),
+              status_message: "",
+            }
           }
 
-        } else {
-          console.log(`🔴 Mensagem inválida: ID - ${idMensagem} | FROM: ${numeroDoContato}`);
         }
 
-        console.log('💚 Processamento concluído');
+        console.log('💜 Processamento de alimentação da base concluído');
       }
 
       // ======================
@@ -98,27 +93,18 @@ export async function startTaskWorkerReceptive() {
         console.log('💜 Atualização de status concluída');
       }
 
-      // ======================
-      // OUTROS
-      // ======================
-      else {
-        console.log(`❤️ Payload não reconhecido`);
-      }
-
       channel.ack(msg);
 
     } catch (err) {
-      // console.log('❌ Erro ao processar webhook');
-      console.error(err);
+      console.error("Erro ao processar alimentação da base" + err);
     }
   })
 }
 
-async function tratarMensagensDeAudio(dados: Message, idMensagem: string, numeroDoContato: string) {
+async function tratarMensagensDeAudio(dados: Message, numeroDoContato: string) {
   try {
     const urlAudio = dados.audio?.url;
     const idAudio = dados.audio?.id;
-    let mensagem;
 
     if (urlAudio && idAudio) {
       interface ReseultGetAudio {
@@ -128,67 +114,29 @@ async function tratarMensagensDeAudio(dados: Message, idMensagem: string, numero
       const resultgGetAudio: ReseultGetAudio = await getAudio(idAudio);
       console.log(resultgGetAudio)
       if (resultgGetAudio.status && resultgGetAudio.data) {
-        mensagem = (await getAnswer(resultgGetAudio.data, numeroDoContato)).data;
-        await sendBodyToMenssage(idMensagem, numeroDoContato, mensagem, "text");
-        return;
+        return (await getAnswer(resultgGetAudio.data, numeroDoContato)).data;
+      } else {
+        return "Ola eu sou a *Fly*, no momento estou em construção e não consegui encontrar a mensagem que me enviou acima. Poderia reformular ela por favor?"
       }
 
-      await sendBodyToMenssage(idMensagem, numeroDoContato, "Percebi que você enviou um áudio, mas no momento só consigo receber respostas em texto. Poderia, por favor, enviar a mensagem por escrito? 😅", "text");
-      return;
+
     }
   } catch (e: any) {
     console.log(e);
-    await sendBodyToMenssage(idMensagem, numeroDoContato, "Percebi que você enviou um áudio, mas no momento só consigo receber respostas em texto. Poderia, por favor, enviar a mensagem por escrito? 😅", "text");
+    return "Ola eu sou a *Fly*, no momento estou em construção e não consegui encontrar a mensagem que me enviou acima. Poderia reformular ela por favor?"
   }
 }
 
-async function tratarMensagensDeTexto(dados: Message, idMensagem: string, numeroDoContato: string) {
+async function tratarMensagensDeTexto(dados: Message, numeroDoContato: string) {
   try {
-    let mensagem;
-
     if (dados.text?.body) {
       const urlAudio = dados.text?.body;
-      mensagem = (await getAnswer(urlAudio, numeroDoContato)).data;
+      return (await getAnswer(urlAudio, numeroDoContato)).data;
     } else {
-      mensagem = "Ola eu sou a *Fly*, no momento estou em construção e não consegui encontrar a mensagem que me enviou acima. Poderia reformular ela por favor?"
+      return "Ola eu sou a *Fly*, no momento estou em construção e não consegui encontrar a mensagem que me enviou acima. Poderia reformular ela por favor?"
     }
-
-    await sendBodyToMenssage(idMensagem, numeroDoContato, mensagem, "text");
-    return;
   } catch (e: any) {
     console.log(e);
-    await sendBodyToMenssage(idMensagem, numeroDoContato, "No momento não consegui processar sua solicitação. Poderia tentar novamente, por favor? 😅", "text");
-    return;
+    return "Ola eu sou a *Fly*, no momento estou em construção e não consegui encontrar a mensagem que me enviou acima. Poderia reformular ela por favor?";
   }
-}
-
-async function sendBodyToMenssage(idMensagem: string, numeroDoContato: string, consultaResposta: string, typeMessage: string) {
-  try {
-
-    const listaDeRespostas = await splitText(consultaResposta);
-
-    for (const mensagem of listaDeRespostas) {
-
-      const payload = await sendMenssagem({ mensagem, idMensagem, numeroDoContato });
-
-      await new Promise(r => setTimeout(r, 20000))
-    }
-  } catch (e: any) {
-    console.log(e)
-  }
-}
-
-async function splitText(text: string, limit = 3800) {
-  const parts = []
-  let current = ""
-  for (const word of text.split(" ")) {
-    if ((current + " " + word).length > limit) {
-      parts.push(current)
-      current = word
-    } else {
-      current += (current ? " " : "") + word
-    }
-  }
-  if (current) parts.push(current)
-  return parts
 }
