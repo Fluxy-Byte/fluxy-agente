@@ -47,8 +47,6 @@ const criarContato = async (name: string, phone: string, id_whats: string) => {
       status: false
     };
 
-  } finally {
-    await pool.end();
   }
 }
 
@@ -73,8 +71,6 @@ const consultarContato = async (phone: string) => {
       status: false
     };
 
-  } finally {
-    await pool.end();
   }
 }
 
