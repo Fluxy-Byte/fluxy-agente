@@ -1,6 +1,7 @@
 import { MetaWebhook } from '../../interfaces/MetaWebhook';
 import { getConectionTheChannel } from '../../config/infra/rabbitmg';
 import { validarCadastroDoContato } from '../../config/database/entities/contatos'
+import type { BodyResult } from "../../adapters/agent/conectionAgente";
 
 export async function startTaskWorkerReceptive() {
   const channel = getConectionTheChannel()
@@ -22,15 +23,12 @@ export async function startTaskWorkerReceptive() {
     if (!msg) return
     const body = JSON.parse(msg.content.toString())
     const task: MetaWebhook = body.bodyTask
-    const repostaParaMensagemEnviada = body.resposta
+    const repostaParaMensagemEnviada: BodyResult = body.resposta
     try {
-      console.log("\n")
-      console.log('🛠 Processando webhook de alimentação de base');
+      console.log('\n---------💜 Processando de alimentação da base começando---------\n');
 
       const mensagem = task.entry[0];
       const dadosDaMesagen = mensagem.changes[0];
-
-      console.log("\n");
 
       if (dadosDaMesagen.value.messages) {
 
@@ -46,12 +44,12 @@ export async function startTaskWorkerReceptive() {
 
         if (idMensagem && numeroDoContato) {
 
-          let respostaParaMensagem = repostaParaMensagemEnviada ?? "Olá! 😊 No momento, ainda não consigo receber mensagens em áudio, imagens, vídeos ou documentos. Poderia me enviar sua dúvida por escrito, por favor? 😊";
+          let respostaParaMensagem = repostaParaMensagemEnviada.output ?? "Olá! 😊 No momento, ainda não consigo receber mensagens em áudio, imagens, vídeos ou documentos. Poderia me enviar sua dúvida por escrito, por favor? 😊";
 
           let nameContact = profileContact?.profile.name ?? "Sem nome no contato";
           let id_whats = profileContact?.wa_id ?? "false";
 
-          const contatoBase: number | boolean = await validarCadastroDoContato(nameContact, numeroDoContato, id_whats);
+          const contatoBase: number | boolean = await validarCadastroDoContato(nameContact, numeroDoContato, id_whats, repostaParaMensagemEnviada.nivel_de_cliente);
 
           if (contatoBase != false) {
 
@@ -70,7 +68,7 @@ export async function startTaskWorkerReceptive() {
 
         }
 
-        console.log('💜 Processamento de alimentação da base concluído');
+        console.log('\n---------💜 Processamento de alimentação da base concluído---------\n');
       }
 
       // ======================

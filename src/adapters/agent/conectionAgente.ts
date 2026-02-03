@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export interface BodyResutl {
+export interface BodyResult {
   output: string
   nivel_de_cliente: string
 }
@@ -20,7 +20,7 @@ export const getAnswer = async (mensagem: string, numeroDoContato: string) => {
       }
     )
 
-    const result: BodyResutl = status ? data : {
+    const result: BodyResult = status ? data : {
       output: "Tivemos um erro nesse exato momento, por favor tente novemente!",
       nivel_de_cliente: "false"
     };
