@@ -3,7 +3,7 @@ import swaggerUi from "swagger-ui-express";
 import { BodyReqCampaing } from "../interfaces/BodySendToCampaing";
 import { createTaskCampaign } from '../services/producers/task.producer.campaign'; // Criar task para campanhas
 import { sendMenssageSemId } from "../adapters/meta/sendMenssageSemId";
-import { createTaskReceptive } from "../services/producers/task.producer.receptive";
+import { buscarTodasAsMensagens } from "../config/database/entities/mensagems";
 import { HandleReceptiveWebhook } from "../services/handleMessages/handleReceptiveWebhook";
 const routes = express();
 
@@ -90,6 +90,21 @@ routes.post("/api/v1/campaign", async (req, res) => {
     res.status(500).json({
       status: false,
       message: "Erro ao inserir na fila de disparo.",
+      error: JSON.stringify(e)
+    });
+  }
+})
+
+// Coletar historico de conversação
+
+routes.get("/api/v1/message-history", async (req, res) => {
+  try {
+    const mensagens = await buscarTodasAsMensagens();
+    return mensagens;
+  } catch (e: any) {
+    res.status(500).json({
+      status: false,
+      message: "Erro ao coletar historico de conversação",
       error: JSON.stringify(e)
     });
   }

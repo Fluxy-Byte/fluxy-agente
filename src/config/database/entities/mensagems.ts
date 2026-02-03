@@ -84,3 +84,11 @@ export async function buscarPorUsuario(id_user: string) {
 
     return mensagens;
 }
+
+export async function buscarTodasAsMensagens() {
+    const mensagens = await MessageModel.find()
+        .sort({ date_send_message: -1 })
+        .limit(50);
+
+    return mensagens;
+}
