@@ -64,7 +64,7 @@ const consultarContato = async (phone: string, pipeline_user: string) => {
       const dadosUser: Contact = resultConsulta.rows[0];
 
       if (dadosUser.pipeline_user && dadosUser.pipeline_user != pipeline_user) {
-        const updateContact = await pool.query("UPDATE cotacts SET pipeline_user = $1 WHERE phone_user = $2", [phone, pipeline_user]);
+        const updateContact = await pool.query("UPDATE contacts SET pipeline_user = $1 WHERE phone_user = $2", [phone, pipeline_user]);
         console.log("Contato atualizado no campo do pipeline_user: " + updateContact.rows[0])
       }
 
