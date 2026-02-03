@@ -100,7 +100,11 @@ routes.post("/api/v1/campaign", async (req, res) => {
 routes.get("/api/v1/message-history", async (req, res) => {
   try {
     const mensagens = await buscarTodasAsMensagens();
-    return mensagens;
+    res.status(200).json({
+      status: true,
+      message: "Mensagens capturadas",
+      data: mensagens
+    });
   } catch (e: any) {
     res.status(500).json({
       status: false,
