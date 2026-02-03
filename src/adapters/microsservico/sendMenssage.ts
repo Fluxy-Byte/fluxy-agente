@@ -135,9 +135,8 @@ export const sendMenssagem = async (props: { mensagem: string, idMensagem: strin
     try {
 
         console.log(`Mensagem gerada pela IA: ${props.mensagem}`)
-        // const tokenMeta = process.env.TOKEN_META;
-        const urlMeta = "https://fluxy-microservice-send-mensage-meta.egnehl.easypanel.host/send-message";
-        const responseSend = await axios.post(urlMeta,
+        const url = process.env.URL_MICROSERVICE ?? "https://fluxe-microservice-message-fluxe-agente.egnehl.easypanel.host";
+        const responseSend = await axios.post(`${url}/send-message`,
             {
                 "mensagem": props.mensagem,
                 "idMensagem": props.idMensagem,

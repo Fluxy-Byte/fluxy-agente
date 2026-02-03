@@ -2,7 +2,8 @@ import axios from "axios";
 
 export async function getAudio(idAudio: string) {
     try {
-        const urlMicroService = "https://fluxy-microservice-send-mensage-meta.egnehl.easypanel.host/transcribe-audio";
+        const url = process.env.URL_MICROSERVICE ?? "https://fluxe-microservice-message-fluxe-agente.egnehl.easypanel.host";
+        const urlMicroService = `${url}/transcribe-audio`;
         const { data, status } = await axios.post(urlMicroService,
             {
                 "idAudio": idAudio
