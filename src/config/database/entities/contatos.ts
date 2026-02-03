@@ -86,9 +86,9 @@ export const validarCadastroDoContato = async (
 ): Promise<number | false> => {
 
   try {
-
+    console.log(name, phone, id_whats)
     const contato = await consultarContato(phone);
-
+    console.log(contato)
     // Se já existe retorna id
     if (contato.status === true) {
       return contato.data.id_user;
