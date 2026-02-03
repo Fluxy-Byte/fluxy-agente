@@ -1,9 +1,4 @@
-// Onde o worker executa
-
 import { MetaWebhook } from '../../interfaces/MetaWebhook';
-import { getAnswer } from '../../adapters/agent/conectionAgente';
-import { getAudio } from "../../adapters/microsservico/getAudio";
-import { Message } from "../../interfaces/MetaWebhook";
 import { getConectionTheChannel } from '../../config/infra/rabbitmg';
 import { validarCadastroDoContato } from '../../config/database/entities/contatos'
 
@@ -99,44 +94,4 @@ export async function startTaskWorkerReceptive() {
       console.error("Erro ao processar alimentação da base" + err);
     }
   })
-}
-
-async function tratarMensagensDeAudio(dados: Message, numeroDoContato: string) {
-  try {
-    const urlAudio = dados.audio?.url;
-    const idAudio = dados.audio?.id;
-
-    if (urlAudio && idAudio) {
-      interface ReseultGetAudio {
-        status: boolean,
-        data: string
-      }
-      const resultgGetAudio: ReseultGetAudio = await getAudio(idAudio);
-      console.log(resultgGetAudio)
-      if (resultgGetAudio.status && resultgGetAudio.data) {
-        return (await getAnswer(resultgGetAudio.data, numeroDoContato)).data;
-      } else {
-        return "Ola eu sou a *Fly*, no momento estou em construção e não consegui encontrar a mensagem que me enviou acima. Poderia reformular ela por favor?"
-      }
-
-
-    }
-  } catch (e: any) {
-    console.log(e);
-    return "Ola eu sou a *Fly*, no momento estou em construção e não consegui encontrar a mensagem que me enviou acima. Poderia reformular ela por favor?"
-  }
-}
-
-async function tratarMensagensDeTexto(dados: Message, numeroDoContato: string) {
-  try {
-    if (dados.text?.body) {
-      const urlAudio = dados.text?.body;
-      return (await getAnswer(urlAudio, numeroDoContato)).data;
-    } else {
-      return "Ola eu sou a *Fly*, no momento estou em construção e não consegui encontrar a mensagem que me enviou acima. Poderia reformular ela por favor?"
-    }
-  } catch (e: any) {
-    console.log(e);
-    return "Ola eu sou a *Fly*, no momento estou em construção e não consegui encontrar a mensagem que me enviou acima. Poderia reformular ela por favor?";
-  }
 }

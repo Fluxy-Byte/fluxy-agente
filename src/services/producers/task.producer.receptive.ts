@@ -3,11 +3,11 @@
 import { getConectionTheChannel } from '../../config/infra/rabbitmg';
 
 export async function createTaskReceptive(task: any) {
-    console.log(task)
+    
     const nomeFila = process.env.NOME_FILA_RABBITMQ ?? "fluxy";
     const channel = getConectionTheChannel()
     console.log(`🟢 Criou na fila recptive`);
-    console.log(JSON.stringify(task))
+
     const queue = `task.${nomeFila}.receptive.create`
     channel.sendToQueue(queue, Buffer.from(JSON.stringify(task)), {
         persistent: true
