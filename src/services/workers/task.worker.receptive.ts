@@ -1,7 +1,8 @@
 import { MetaWebhook } from '../../interfaces/MetaWebhook';
 import { getConectionTheChannel } from '../../config/infra/rabbitmg';
-import { validarCadastroDoContato } from '../../config/database/entities/contatos'
+import { validarCadastroDoContato } from '../../config/database/entities/contatos';
 import type { BodyResult } from "../../adapters/agent/conectionAgente";
+import { salvarMensagem } from "../../config/database/entities/mensagems"
 
 export async function startTaskWorkerReceptive() {
   const channel = getConectionTheChannel()
@@ -64,6 +65,8 @@ export async function startTaskWorkerReceptive() {
               date_send_message: new Date(),
               status_message: "",
             }
+
+            await salvarMensagem(dadosMensagem)
           }
 
         }
