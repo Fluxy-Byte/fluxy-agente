@@ -1,6 +1,5 @@
 import express from "express";
 import swaggerUi from "swagger-ui-express";
-import { BodyReqCampaing } from "../interfaces/BodySendToCampaing";
 import { createTaskCampaign } from '../services/producers/task.producer.campaign'; // Criar task para campanhas
 import { sendMenssageSemId } from "../adapters/meta/sendMenssageSemId";
 import { buscarTodasAsMensagens } from "../config/database/entities/mensagems";
@@ -68,7 +67,7 @@ routes.post("/api/v1/receptive/sdr/webhook", async (req, res) => {
 // Receber mensagens ativas para disparo
 routes.post("/api/v1/campaign", async (req, res) => {
   try {
-    const bodyToCampaing: BodyReqCampaing = req.body;
+    const bodyToCampaing: any = req.body;
     console.log(bodyToCampaing)
     if (!bodyToCampaing.body.messaging_product || !bodyToCampaing.body.recipient_type || !bodyToCampaing.body.template || !bodyToCampaing.body.to || !bodyToCampaing.type) {
       return res.status(401).json({

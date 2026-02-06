@@ -94,7 +94,11 @@ async function tratarMensagensDeAudio(dados: Message, idMensagem: string, numero
             await sendBodyToMenssage(idMensagem, numeroDoContato, "Percebi que você enviou um áudio, mas no momento só consigo receber respostas em texto. Poderia, por favor, enviar a mensagem por escrito? 😅", "text");
             return {
                 nivel_de_cliente: "Novo",
-                output: "Percebi que você enviou um áudio, mas no momento só consigo receber respostas em texto. Poderia, por favor, enviar a mensagem por escrito? 😅"
+                output: "Percebi que você enviou um áudio, mas no momento só consigo receber respostas em texto. Poderia, por favor, enviar a mensagem por escrito? 😅",
+                nome_user: "",
+                tipo_produto: "",
+                nivel_de_interesse: "",
+                informacoes_completas: "",
             }
         }
     } catch (e: any) {
@@ -102,7 +106,11 @@ async function tratarMensagensDeAudio(dados: Message, idMensagem: string, numero
         await sendBodyToMenssage(idMensagem, numeroDoContato, "Percebi que você enviou um áudio, mas no momento só consigo receber respostas em texto. Poderia, por favor, enviar a mensagem por escrito? 😅", "text");
         return {
             nivel_de_cliente: "Novo",
-            output: "Percebi que você enviou um áudio, mas no momento só consigo receber respostas em texto. Poderia, por favor, enviar a mensagem por escrito? 😅"
+            output: "Percebi que você enviou um áudio, mas no momento só consigo receber respostas em texto. Poderia, por favor, enviar a mensagem por escrito? 😅",
+            nome_user: "",
+            tipo_produto: "",
+            nivel_de_interesse: "",
+            informacoes_completas: "",
         }
     }
 }
@@ -118,7 +126,11 @@ async function tratarMensagensDeTexto(dados: Message, idMensagem: string, numero
         } else {
             result = {
                 nivel_de_cliente: "Novo",
-                output: "Ola eu sou a *Fly*, no momento estou em construção e não consegui encontrar a mensagem que me enviou acima. Poderia reformular ela por favor?"
+                output: "Ola eu sou a *Fly*, no momento estou em construção e não consegui encontrar a mensagem que me enviou acima. Poderia reformular ela por favor?",
+                nome_user: "",
+                tipo_produto: "",
+                nivel_de_interesse: "",
+                informacoes_completas: "",
             }
             mensagem = "Ola eu sou a *Fly*, no momento estou em construção e não consegui encontrar a mensagem que me enviou acima. Poderia reformular ela por favor?"
         }
@@ -130,7 +142,11 @@ async function tratarMensagensDeTexto(dados: Message, idMensagem: string, numero
         await sendBodyToMenssage(idMensagem, numeroDoContato, "No momento não consegui processar sua solicitação. Poderia tentar novamente, por favor? 😅", "text");
         return {
             nivel_de_cliente: "Novo",
-            output: "No momento não consegui processar sua solicitação. Poderia tentar novamente, por favor? 😅"
+            output: "No momento não consegui processar sua solicitação. Poderia tentar novamente, por favor? 😅",
+            nome_user: "",
+            tipo_produto: "",
+            nivel_de_interesse: "",
+            informacoes_completas: "",
         }
     }
 }

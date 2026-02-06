@@ -1,9 +1,7 @@
-// Onde a API recebe tarefas
-import { BodyReqCampaing } from "../../interfaces/BodySendToCampaing"
 
 import { getConectionTheChannel } from '../../config/infra/rabbitmg';
 
-export async function createTaskCampaign(task: BodyReqCampaing) {
+export async function createTaskCampaign(task: any) {
     const nomeFila = process.env.NOME_FILA_RABBITMQ ?? "fluxy";
     const channel = getConectionTheChannel()
     console.log(`🔵 Criou na fila campaing`);

@@ -27,7 +27,11 @@ export const getAnswer = async (mensagem: string, numeroDoContato: string) => {
 
     const result: BodyResult = status ? data : {
       output: "Tivemos um erro nesse exato momento, por favor tente novemente!",
-      nivel_de_cliente: "false"
+      nivel_de_cliente: "false",
+      nome_user: "",
+      tipo_produto: "",
+      nivel_de_interesse: "",
+      informacoes_completas: "",
     };
 
     return {
@@ -40,7 +44,11 @@ export const getAnswer = async (mensagem: string, numeroDoContato: string) => {
     return {
       data: {
         output: "Tivemos um erro nesse exato momento, por favor tente novemente!",
-        nivel_de_cliente: "false"
+        nivel_de_cliente: "false",
+        nome_user: "",
+        tipo_produto: "",
+        nivel_de_interesse: "",
+        informacoes_completas: "",
       },
       status: 500
     }
