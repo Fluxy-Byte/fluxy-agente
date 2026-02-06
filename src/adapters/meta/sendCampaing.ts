@@ -1,10 +1,12 @@
 import axios from "axios";
-import { BodyToSendCampaign } from "../../interfaces/BodySendToCampaing";
+import { BodyTemplate } from "../../interfaces/BodySendToCampaing";
 
-export const sendCampaing = async (body: BodyToSendCampaign) => {
+
+
+export const sendCampaing = async (body: BodyTemplate) => {
     try {
         const tokenMeta = process.env.TOKEN_META;
-        const urlMeta = process.env.URL_META ?? "https://graph.facebook.com/v23.0/872884792582393/message_templates";
+        const urlMeta = process.env.URL_META ?? "https://graph.facebook.com/v23.0/872884792582393/messages";
         const responseSend = await axios.post(urlMeta,
             body,
             {

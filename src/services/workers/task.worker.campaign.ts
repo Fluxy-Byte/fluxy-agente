@@ -2,7 +2,17 @@
 
 import { getConectionTheChannel } from '../../config/infra/rabbitmg';
 import { sendCampaing } from "../../adapters/meta/sendCampaing";
-import { BodyReqCampaing } from "../../interfaces/BodySendToCampaing"
+
+interface Payload {
+  numbers: Numbers[],
+  template_name: string,
+  type: string
+}
+
+interface Numbers {
+  phone: string,
+  parameters: any[]
+}
 
 export async function startTaskWorkerCampaign() {
   const channel = getConectionTheChannel()
@@ -23,17 +33,45 @@ export async function startTaskWorkerCampaign() {
   channel.consume(queue, async msg => {
     if (!msg) return
 
-    const bodyCampaign: BodyReqCampaing = JSON.parse(msg.content.toString())
+    const bodyCampaign: Payload = JSON.parse(msg.content.toString())
 
     try {
-      const dataToSend = bodyCampaign.body;
-      const typeBody = bodyCampaign.type;
+      if (bodyCampaign.numbers.length == 0) {
+        console.log('❌ Tarefa não concluida pois não tem numeros para disparo');
+        channel.ack(msg);
+        return;
+      }
+
+      for (let i = 0; i < bodyCampaign.numbers.length; i++) {
+        let contact = bodyCampaign.numbers[i];
+        const dataToSend = {
+          "type": bodyCampaign.type,
+          "body": {
+            "messaging_product": "whatsapp",
+            "recipient_type": "individual",
+            "to": contact.phone,
+            "type": "template",
+            "template": {
+              "name": bodyCampaign.template_name,
+              "language": {
+                "code": "pt_BR"
+              },
+              "components": contact.parameters
+            }
+          }
+        }
+
+        const type = bodyCampaign.type
+
+        await sendCampaing(dataToSend);
+      }
+
       console.log('🛠 Executando tarefa');
       console.log(JSON.stringify(bodyCampaign));
-      let responseSendCampaing = await sendCampaing(dataToSend);
+      let responseSendCampaing =
 
-      // console.log(responseSendCampaing);
-      console.log('✅ Tarefa concluída')
+        // console.log(responseSendCampaing);
+        console.log('✅ Tarefa concluída')
       channel.ack(msg)
     } catch (err) {
       console.log('❌ Falhou, jogando pra DLQ');
@@ -41,3 +79,22 @@ export async function startTaskWorkerCampaign() {
     }
   })
 }
+
+
+
+// {
+//   "type": "text",
+//     "body": {
+//     "messaging_product": "whatsapp",
+//       "recipient_type": "individual",
+//         "to": "",
+//           "type": "template",
+//             "template": {
+//       "name": "boas_vindas_poup",
+//         "language": {
+//         "code": "pt_BR"
+//       },
+//       "components": []
+//     }
+//   }
+// }
