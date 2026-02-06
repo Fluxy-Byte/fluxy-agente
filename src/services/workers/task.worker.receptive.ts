@@ -47,7 +47,7 @@ export async function startTaskWorkerReceptive() {
 
           let respostaParaMensagem = repostaParaMensagemEnviada.output ?? "Olá! 😊 No momento, ainda não consigo receber mensagens em áudio, imagens, vídeos ou documentos. Poderia me enviar sua dúvida por escrito, por favor? 😊";
 
-          let nameContact = profileContact?.profile.name ?? "Sem nome no contato";
+          let nameContact = profileContact?.profile?.name ?? "Sem nome no contato";
           let id_whats = profileContact?.wa_id ?? "false";
 
           const contatoBase: number | boolean = await validarCadastroDoContato(nameContact, numeroDoContato, id_whats, repostaParaMensagemEnviada.nivel_de_cliente,  repostaParaMensagemEnviada.nome_user,  repostaParaMensagemEnviada.tipo_produto, repostaParaMensagemEnviada.nivel_de_interesse);
