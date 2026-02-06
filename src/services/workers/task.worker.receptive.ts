@@ -25,6 +25,9 @@ export async function startTaskWorkerReceptive() {
     const body = JSON.parse(msg.content.toString())
     const task: MetaWebhook = body.bodyTask
     const repostaParaMensagemEnviada: BodyResult = body.resposta
+
+    console.log(repostaParaMensagemEnviada)
+
     try {
       console.log('\n---------💜 Processando de alimentação da base começando---------\n');
 
@@ -50,7 +53,7 @@ export async function startTaskWorkerReceptive() {
           let nameContact = profileContact?.profile?.name ?? "Sem nome no contato";
           let id_whats = profileContact?.wa_id ?? "false";
 
-          const contatoBase: number | boolean = await validarCadastroDoContato(nameContact, numeroDoContato, id_whats, repostaParaMensagemEnviada.nivel_de_cliente,  repostaParaMensagemEnviada.nome_user,  repostaParaMensagemEnviada.tipo_produto, repostaParaMensagemEnviada.nivel_de_interesse);
+          const contatoBase: number | boolean = await validarCadastroDoContato(nameContact, numeroDoContato, id_whats, repostaParaMensagemEnviada.nivel_de_cliente, repostaParaMensagemEnviada.nome_user, repostaParaMensagemEnviada.tipo_produto, repostaParaMensagemEnviada.nivel_de_interesse);
 
           if (contatoBase != false) {
 

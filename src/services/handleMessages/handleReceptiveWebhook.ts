@@ -43,13 +43,21 @@ export async function HandleReceptiveWebhook(task: MetaWebhook) {
                         numeroDoContato
                     );
                 } else {
-                    mensagem = "Olá! 😊 No momento, ainda não consigo receber mensagens em áudio, imagens, vídeos ou documentos. Poderia me enviar sua dúvida por escrito, por favor? 😊"
                     await sendBodyToMenssage(
                         idMensagem,
                         numeroDoContato,
-                        mensagem,
+                        "Olá! 😊 No momento, ainda não consigo receber mensagens em áudio, imagens, vídeos ou documentos. Poderia me enviar sua dúvida por escrito, por favor? 😊",
                         "text"
                     )
+                    
+                    mensagem = {
+                        nivel_de_cliente: "Novo",
+                        output: "Olá! 😊 No momento, ainda não consigo receber mensagens em áudio, imagens, vídeos ou documentos. Poderia me enviar sua dúvida por escrito, por favor? 😊",
+                        nome_user: "Sem nome",
+                        tipo_produto: "",
+                        nivel_de_interesse: "Novo",
+                        informacoes_completas: "",
+                    }
                 }
 
                 await createTaskReceptive({
@@ -77,6 +85,7 @@ async function tratarMensagensDeAudio(dados: Message, idMensagem: string, numero
         const idAudio = dados.audio?.id;
         let mensagem;
         let result: BodyResult;
+
         if (urlAudio && idAudio) {
             interface ReseultGetAudio {
                 status: boolean,

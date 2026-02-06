@@ -25,6 +25,8 @@ export const getAnswer = async (mensagem: string, numeroDoContato: string) => {
       }
     )
 
+    console.log(data)
+
     const result: BodyResult = status ? data : {
       output: "Tivemos um erro nesse exato momento, por favor tente novemente!",
       nivel_de_cliente: "false",
