@@ -27,13 +27,13 @@ export const getAnswer = async (mensagem: string, numeroDoContato: string) => {
 
     console.log(data)
 
-    const result: BodyResult = status ? data : {
-      output: "Tivemos um erro nesse exato momento, por favor tente novemente!",
-      nivel_de_cliente: "false",
-      nome_user: "",
-      tipo_produto: "",
-      nivel_de_interesse: "",
-      informacoes_completas: "",
+    const result: BodyResult = {
+      output: data.output ?? "Tivemos um erro nesse exato momento, por favor tente novemente!",
+      nivel_de_cliente: data.nivel_de_cliente ?? "false",
+      nome_user: data.nome_user ?? "Não indentificado",
+      tipo_produto: data.tipo_produto ?? "",
+      nivel_de_interesse: data.nivel_de_interesse ?? "Novo",
+      informacoes_completas: data.informacoes_completas ?? "false",
     };
 
     return {
@@ -47,10 +47,10 @@ export const getAnswer = async (mensagem: string, numeroDoContato: string) => {
       data: {
         output: "Tivemos um erro nesse exato momento, por favor tente novemente!",
         nivel_de_cliente: "false",
-        nome_user: "",
+        nome_user: "Não indentificado",
         tipo_produto: "",
-        nivel_de_interesse: "",
-        informacoes_completas: "",
+        nivel_de_interesse: "Novo",
+        informacoes_completas: "false",
       },
       status: 500
     }
