@@ -4,9 +4,11 @@
   "description": "Backend para recebimento e envio de mensagem",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node src/index.ts",
+    "dev": "ts-node -r tsconfig-paths/register index.ts",
     "build": "tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev"
   },
   "repository": {
     "type": "git",
@@ -15,7 +17,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
   "bugs": {
     "url": "https://github.com/Fluxy-Byte/fluxy-agente/issues"
   },
@@ -27,6 +28,8 @@
     "@types/pg": "^8.16.0",
     "@types/swagger-ui-express": "^4.1.8",
     "prisma": "^7.3.0",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   },

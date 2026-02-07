@@ -1,5 +1,5 @@
-import { contato } from "@/infra/dataBase/contacts";
-import type { User } from "@/infra/dataBase/contacts";
+import { contato } from "../../infra/dataBase/contacts";
+import type { User } from "../../infra/dataBase/contacts";
 import { getConectionTheChannel } from '../../infra/rabbitMQ/conection';
 import type { MetaWebhook } from '../interfaces/MetaWebhook';
 import { criarHistoricoDeConversa } from "../../infra/dataBase/messages"
