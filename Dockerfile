@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 # Inicia conexão com bancos de dados
-RUN npx prisma generate --schema=prisma/postgres.prisma
+RUN npx prisma generate
 
 # Compila o TypeScript
 # RUN npm run dev
