@@ -7,11 +7,11 @@ WORKDIR /app
 # Copia package.json e lock
 COPY package*.json ./
 
-# Inicia conexão com bancos de dados
-RUN npx prisma generate --schema=prisma/postgres.prisma
-
 # Instala dependências
 RUN npm install
+
+# Inicia conexão com bancos de dados
+RUN npx prisma generate --schema=prisma/postgres.prisma
 
 # Copia o resto do projeto
 COPY . .
