@@ -60,7 +60,7 @@ export async function startTaskWorkerReceptive() {
                             mensagemRecebida,
                             respostaParaMensagem,
                             String(new Date(Number(timesTampMensagem) * 1000)),
-                            "Processada",
+                            "enviado",
                         )
                     }
 
