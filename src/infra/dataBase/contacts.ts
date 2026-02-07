@@ -64,3 +64,23 @@ export async function contato(name: string, phone: string) {
     }
 }
 
+export async function contatoTeste(name: string, phone: string) {
+    try {
+        let user: User;
+        let resultCreate = await criarUsuario(name, phone);
+        user = resultCreate.user;
+
+        return {
+            status: user ? true : false,
+            user
+        }
+    }
+
+    catch (e) {
+        console.log(`Erro ao gerar ususario: ${e}`);
+        return {
+            status: false,
+        }
+    }
+}
+
