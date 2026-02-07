@@ -4,7 +4,9 @@
   "description": "Backend para recebimento e envio de mensagem",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "ts-node src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
   },
   "repository": {
     "type": "git",
@@ -20,6 +22,7 @@
   "homepage": "https://github.com/Fluxy-Byte/fluxy-agente#readme",
   "devDependencies": {
     "@google/adk-devtools": "^0.3.0",
+    "@types/amqplib": "^0.10.8",
     "@types/node": "^25.2.1",
     "@types/pg": "^8.16.0",
     "@types/swagger-ui-express": "^4.1.8",

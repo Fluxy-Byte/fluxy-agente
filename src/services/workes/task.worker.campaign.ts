@@ -30,7 +30,7 @@ export async function startTaskWorkerCampaign() {
 
   channel.prefetch(1)
 
-  channel.consume(queue, async (msg: { content: { toString: () => string; }; }) => {
+  channel.consume(queue, async (msg: any) => {
     if (!msg) return
 
     const bodyCampaign: Payload = JSON.parse(msg.content.toString())
