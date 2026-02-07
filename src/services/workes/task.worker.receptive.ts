@@ -23,6 +23,7 @@ export async function startTaskWorkerReceptive() {
     channel.consume(queue, async (msg: any) => {
         if (!msg) return
         const body = JSON.parse(msg.content.toString())
+        console.log(body)
         const task: MetaWebhook = body.bodyTask
         const repostaEnviada: string = body.resposta
 
