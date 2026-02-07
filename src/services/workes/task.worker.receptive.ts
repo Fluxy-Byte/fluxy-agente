@@ -51,6 +51,8 @@ export async function startTaskWorkerReceptive() {
                     const usuario = await contato(profileContact?.profile.name ?? "Sem nome no perfil", numeroDoContato);
 
                     if (usuario.user) {
+
+                        console.log(usuario.user)
                         const dadosUser: User = usuario.user
                         await criarHistoricoDeConversa(
                             dadosUser.id,
@@ -58,7 +60,7 @@ export async function startTaskWorkerReceptive() {
                             mensagemRecebida,
                             respostaParaMensagem,
                             String(new Date(Number(timesTampMensagem) * 1000)),
-                            "",
+                            "Processada",
                         )
                     }
 

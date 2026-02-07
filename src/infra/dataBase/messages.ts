@@ -80,6 +80,7 @@ export const Message = mongoose.model<IMessage>(
 /* ===============================
    EXEMPLO DE USO
 ================================ */
+
 export async function criarHistoricoDeConversa(id_user: number, type_message: string, question_message: string, answer_message: string, date_recept_message: string, status_message: string) {
     const msg = await Message.create({
         id_user,
