@@ -4,47 +4,39 @@
   "description": "Backend para recebimento e envio de mensagem",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon --watch src --exec ts-node index.ts",
-    "build": "tsc",
-    "start": "node dist/index.js",
-    "typeorm": "typeorm-ts-node-commonjs"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Fluxy-Byte/fluxy-agente"
+    "url": "git+https://github.com/Fluxy-Byte/fluxy-agente.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "type": "commonjs",
   "bugs": {
     "url": "https://github.com/Fluxy-Byte/fluxy-agente/issues"
   },
   "homepage": "https://github.com/Fluxy-Byte/fluxy-agente#readme",
-  "dependencies": {
-    "@google/generative-ai": "^0.24.1",
-    "amqplib": "^0.10.9",
-    "axios": "^1.13.2",
-    "axios-retry": "^4.5.0",
-    "dotenv": "^17.2.3",
-    "express": "^5.2.1",
-    "mongoose": "^9.1.5",
-    "openai": "^6.16.0",
-    "pg": "^8.18.0",
-    "reflect-metadata": "^0.2.2",
-    "swagger-ui-express": "^5.0.1"
-  },
   "devDependencies": {
-    "@types/amqplib": "^0.10.8",
-    "@types/express": "^5.0.6",
-    "@types/node": "^25.0.3",
+    "@google/adk-devtools": "^0.3.0",
+    "@types/node": "^25.2.1",
     "@types/pg": "^8.16.0",
     "@types/swagger-ui-express": "^4.1.8",
-    "nodemon": "^3.1.11",
-    "ts-node": "^10.9.2",
-    "ts-node-dev": "^2.0.0",
-    "tsconfig-paths": "^4.2.0",
-    "typeorm": "^0.3.28",
-    "typeorm-ts-node-commonjs": "^0.3.20",
+    "prisma": "^7.3.0",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@google/adk": "^0.3.0",
+    "@prisma/adapter-pg": "^7.3.0",
+    "@prisma/client": "^7.3.0",
+    "amqplib": "^0.10.9",
+    "axios": "^1.13.4",
+    "dotenv": "^17.2.4",
+    "express": "^5.2.1",
+    "mongoose": "^9.1.6",
+    "pg": "^8.18.0",
+    "swagger-ui-express": "^5.0.1"
   }
 }

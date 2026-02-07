@@ -1,6 +1,6 @@
 // Onde o worker executa
 
-import { getConectionTheChannel } from '../../config/infra/rabbitmg';
+import { getConectionTheChannel } from '../../infra/rabbitMQ/conection';
 import { sendCampaing } from "../../adapters/meta/sendCampaing";
 
 interface Payload {
@@ -30,7 +30,7 @@ export async function startTaskWorkerCampaign() {
 
   channel.prefetch(1)
 
-  channel.consume(queue, async msg => {
+  channel.consume(queue, async (msg: { content: { toString: () => string; }; }) => {
     if (!msg) return
 
     const bodyCampaign: Payload = JSON.parse(msg.content.toString())

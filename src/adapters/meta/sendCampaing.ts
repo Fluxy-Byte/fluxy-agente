@@ -1,7 +1,5 @@
 import axios from "axios";
-import { BodyTemplate } from "../../interfaces/BodySendToCampaing";
-
-
+import { BodyTemplate } from "../interfaces/BodySendToCampaing";
 
 export const sendCampaing = async (body: BodyTemplate) => {
     try {

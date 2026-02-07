@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export async function getAudio(idAudio: string) {
+export async function getAudio(idAudio: string, MENSAGM_DEFAULT: string) {
     try {
         const url = process.env.URL_MICROSERVICE ?? "https://fluxe-microservice-message-fluxe-agente.egnehl.easypanel.host";
         const urlMicroService = `${url}/transcribe-audio`;
@@ -9,15 +9,15 @@ export async function getAudio(idAudio: string) {
                 "idAudio": idAudio
             }
         )
-
+        
         return {
             status: status == 200,
-            data: data.mensagem ?? "Ops, no momento não consegue escutar seu audio a um devido problema tecnico, poderia me mandar escrito?"
+            data: data.mensagem ?? MENSAGM_DEFAULT
         }
     } catch (e: any) {
         return {
             status: false,
-            data: "Ops, no momento não consegue escutar seu audio a um devido problema tecnico, poderia me mandar escrito?"
+            data: MENSAGM_DEFAULT
         }
     }
 }

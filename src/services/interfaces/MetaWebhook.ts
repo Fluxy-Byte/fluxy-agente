@@ -62,14 +62,3 @@ export interface Status {
     type: string
   }
 }
-
-// "id": "wamid.HBgMNTUzNDk3ODAxODI5FQIAERgSMTA2ODVGMEFENzA2Njg4OUIxAA==",
-//   "status": "read",
-//     "timestamp": "1768872043",
-//       "recipient_id": "553497801829",
-//         "pricing": {
-//   "billable": false,
-//     "pricing_model": "PMP",
-//       "category": "service",
-//         "type": "free_customer_service"
-// }

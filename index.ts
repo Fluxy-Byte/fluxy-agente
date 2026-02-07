@@ -1,9 +1,9 @@
 import 'dotenv/config'
 import routes from "./src/routes/route";
-import { connectRabbit } from "./src/config/infra/rabbitmg";
-import { startTaskWorkerCampaign } from './src/services/workers/task.worker.campaign';
-import { startTaskWorkerReceptive } from './src/services/workers/task.worker.receptive';
-import { connectMongo } from './src/config/database/conectionMongo';
+import { connectRabbit } from "./src/infra/rabbitMQ/conection";
+import { startTaskWorkerCampaign } from './src/services/workes/task.worker.campaign';
+import { startTaskWorkerReceptive } from './src/services/workes/task.worker.receptive';
+import { connectMongo } from './src/infra/dataBase/messages';
 
 const PORT = process.env.PORT || 3000;
 
@@ -24,4 +24,3 @@ async function start() {
 }
 
 start()
-

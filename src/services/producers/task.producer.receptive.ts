@@ -1,6 +1,7 @@
-// Onde a API recebe tarefas
 
-import { getConectionTheChannel } from '../../config/infra/rabbitmg';
+import { getConectionTheChannel } from '../../infra/rabbitMQ/conection';
+
+// Onde a API recebe tarefas
 
 export async function createTaskReceptive(task: any) {
 

@@ -1,19 +1,17 @@
-
-import { MetaWebhook } from '../../interfaces/MetaWebhook';
-import { getAnswer } from '../../adapters/agent/conectionAgente';
-import { getAudio } from "../../adapters/microsservico/getAudio";
-import { Message } from "../../interfaces/MetaWebhook";
-import { sendMenssagem } from "../../adapters/microsservico/sendMenssage";
+import { MetaWebhook } from '../interfaces/MetaWebhook';
 import { createTaskReceptive } from "../producers/task.producer.receptive";
-import type { BodyResult } from "../../adapters/agent/conectionAgente";
+import { getAudio } from "../../adapters/microsservico/getAudio";
+import type { Message } from "../interfaces/MetaWebhook";
+import { sendMenssagem } from "../../adapters/microsservico/sendMenssage";
+import { getAnwser } from "../../adapters/tools/getAnwser";
 
 export async function HandleReceptiveWebhook(task: MetaWebhook) {
     try {
 
+        const MENSAGM_DEFAULT = process.env.MENSAGM_DEFAULT ?? "Tivemos um erro inesperado no momento. Tente novamente mais a tarde!\n\nA Fluxy agradece o contato! 💜"
+
         const mensagem = task.entry[0];
         const dadosDaMesagen = mensagem.changes[0];
-
-        //await createTaskReceptive(task);
 
         if (dadosDaMesagen.value.messages) {
 
@@ -26,43 +24,37 @@ export async function HandleReceptiveWebhook(task: MetaWebhook) {
             const numeroDoContato = dadosDoBodyDaMensagem?.from || false;
 
             console.log(`ID: ${idMensagem} - TYPE: ${tipoDaMensagem} - MSG: ${mensagemRecebida}`);
-
             if (idMensagem && numeroDoContato) {
                 let mensagem;
                 if (tipoDaMensagem === "audio") {
                     mensagem = await tratarMensagensDeAudio(
                         dadosDoBodyDaMensagem,
                         idMensagem,
-                        numeroDoContato
+                        numeroDoContato,
+                        MENSAGM_DEFAULT
                     );
 
                 } else if (tipoDaMensagem === "text") {
                     mensagem = await tratarMensagensDeTexto(
                         dadosDoBodyDaMensagem,
                         idMensagem,
-                        numeroDoContato
+                        numeroDoContato,
+                        MENSAGM_DEFAULT
                     );
                 } else {
+
                     await sendBodyToMenssage(
                         idMensagem,
                         numeroDoContato,
-                        "Olá! 😊 No momento, ainda não consigo receber mensagens em áudio, imagens, vídeos ou documentos. Poderia me enviar sua dúvida por escrito, por favor? 😊",
-                        "text"
+                        MENSAGM_DEFAULT,
                     )
-                    
-                    mensagem = {
-                        nivel_de_cliente: "Novo",
-                        output: "Olá! 😊 No momento, ainda não consigo receber mensagens em áudio, imagens, vídeos ou documentos. Poderia me enviar sua dúvida por escrito, por favor? 😊",
-                        nome_user: "Sem nome",
-                        tipo_produto: "",
-                        nivel_de_interesse: "Novo",
-                        informacoes_completas: "",
-                    }
+
+                    mensagem = MENSAGM_DEFAULT
                 }
 
                 await createTaskReceptive({
                     bodyTask: task,
-                    resposta: mensagem // Essa variavel recebe o tipo BodyResult que vem do agente
+                    resposta: mensagem
                 });
 
             } else {
@@ -79,88 +71,56 @@ export async function HandleReceptiveWebhook(task: MetaWebhook) {
 }
 
 
-async function tratarMensagensDeAudio(dados: Message, idMensagem: string, numeroDoContato: string) {
+async function tratarMensagensDeAudio(dados: Message, idMensagem: string, numeroDoContato: string, MENSAGM_DEFAULT: string) {
     try {
         const urlAudio = dados.audio?.url;
         const idAudio = dados.audio?.id;
-        let mensagem;
-        let result: BodyResult;
+        let mensagem: string;
 
         if (urlAudio && idAudio) {
             interface ReseultGetAudio {
                 status: boolean,
                 data: string
             }
-            const resultgGetAudio: ReseultGetAudio = await getAudio(idAudio);
+            const resultgGetAudio: ReseultGetAudio = await getAudio(idAudio, MENSAGM_DEFAULT);
 
             if (resultgGetAudio.status && resultgGetAudio.data) {
-                result = (await getAnswer(resultgGetAudio.data, numeroDoContato)).data;
-                mensagem = result.output;
-                await sendBodyToMenssage(idMensagem, numeroDoContato, mensagem, "text");
-                return result;
+                let result = resultgGetAudio.data
+                mensagem = await getAnwser(result, numeroDoContato, MENSAGM_DEFAULT);
+                await sendBodyToMenssage(idMensagem, numeroDoContato, mensagem);
+                return mensagem;
             }
 
-            await sendBodyToMenssage(idMensagem, numeroDoContato, "Percebi que você enviou um áudio, mas no momento só consigo receber respostas em texto. Poderia, por favor, enviar a mensagem por escrito? 😅", "text");
-            return {
-                nivel_de_cliente: "Novo",
-                output: "Percebi que você enviou um áudio, mas no momento só consigo receber respostas em texto. Poderia, por favor, enviar a mensagem por escrito? 😅",
-                nome_user: "",
-                tipo_produto: "",
-                nivel_de_interesse: "",
-                informacoes_completas: "",
-            }
+            await sendBodyToMenssage(idMensagem, numeroDoContato, MENSAGM_DEFAULT);
+            return MENSAGM_DEFAULT
         }
     } catch (e: any) {
         console.log("❌ Erro ao coletar mensagem de audio: " + e);
-        await sendBodyToMenssage(idMensagem, numeroDoContato, "Percebi que você enviou um áudio, mas no momento só consigo receber respostas em texto. Poderia, por favor, enviar a mensagem por escrito? 😅", "text");
-        return {
-            nivel_de_cliente: "Novo",
-            output: "Percebi que você enviou um áudio, mas no momento só consigo receber respostas em texto. Poderia, por favor, enviar a mensagem por escrito? 😅",
-            nome_user: "",
-            tipo_produto: "",
-            nivel_de_interesse: "",
-            informacoes_completas: "",
-        }
+        await sendBodyToMenssage(idMensagem, numeroDoContato, MENSAGM_DEFAULT);
+        return MENSAGM_DEFAULT
     }
 }
 
-async function tratarMensagensDeTexto(dados: Message, idMensagem: string, numeroDoContato: string) {
+async function tratarMensagensDeTexto(dados: Message, idMensagem: string, numeroDoContato: string, MENSAGM_DEFAULT: string) {
     try {
-        let mensagem;
-        let result: BodyResult;
+        let responseToUser;
         if (dados.text?.body) {
-            const urlAudio = dados.text?.body;
-            result = (await getAnswer(urlAudio, numeroDoContato)).data;
-            mensagem = result.output
+            const mensagemUser = dados.text?.body;
+            responseToUser = await getAnwser(mensagemUser, numeroDoContato, MENSAGM_DEFAULT);
         } else {
-            result = {
-                nivel_de_cliente: "Novo",
-                output: "Ola eu sou a *Fly*, no momento estou em construção e não consegui encontrar a mensagem que me enviou acima. Poderia reformular ela por favor?",
-                nome_user: "",
-                tipo_produto: "",
-                nivel_de_interesse: "",
-                informacoes_completas: "",
-            }
-            mensagem = "Ola eu sou a *Fly*, no momento estou em construção e não consegui encontrar a mensagem que me enviou acima. Poderia reformular ela por favor?"
+            responseToUser = MENSAGM_DEFAULT;
         }
 
-        await sendBodyToMenssage(idMensagem, numeroDoContato, mensagem, "text");
-        return result;
+        await sendBodyToMenssage(idMensagem, numeroDoContato, responseToUser);
+        return responseToUser;
     } catch (e: any) {
         console.log("❌ Erro ao coletar mensagem de texto: " + e);
-        await sendBodyToMenssage(idMensagem, numeroDoContato, "No momento não consegui processar sua solicitação. Poderia tentar novamente, por favor? 😅", "text");
-        return {
-            nivel_de_cliente: "Novo",
-            output: "No momento não consegui processar sua solicitação. Poderia tentar novamente, por favor? 😅",
-            nome_user: "",
-            tipo_produto: "",
-            nivel_de_interesse: "",
-            informacoes_completas: "",
-        }
+        await sendBodyToMenssage(idMensagem, numeroDoContato, MENSAGM_DEFAULT);
+        return MENSAGM_DEFAULT;
     }
 }
 
-async function sendBodyToMenssage(idMensagem: string, numeroDoContato: string, consultaResposta: string, typeMessage: string) {
+async function sendBodyToMenssage(idMensagem: string, numeroDoContato: string, consultaResposta: string) {
     try {
 
         const listaDeRespostas = await splitText(consultaResposta);
