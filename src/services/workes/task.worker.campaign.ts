@@ -1,7 +1,7 @@
 // Onde o worker executa
 
 import { getConectionTheChannel } from '../../infra/rabbitMQ/conection';
-import { sendCampaing } from "../../adapters/meta/sendCampaing";
+import { sendCampaing } from "../../adapters/microsservico/sendCampaing";
 import { handleHistoricoDeConversa } from "../tools/handleHistoricoDeConversa"
 
 interface Payload {
