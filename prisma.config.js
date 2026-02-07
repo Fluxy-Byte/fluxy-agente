@@ -3,16 +3,12 @@
 import "dotenv/config";
 import { defineConfig } from "prisma/config";
 export default defineConfig({
-    // Mongo DB
-    //schema: "prisma/mongo.prisma",
     // Postgres
     schema: "prisma/postgres.prisma",
     migrations: {
         path: "prisma/migrations",
     },
     datasource: {
-        // Mongo DB
-        //url: process.env["DATABASE_URL_MONGO"],
         // Postgres
         url: process.env["DATABASE_URL_POSTGRES"],
     },

@@ -9,7 +9,6 @@ COPY package*.json ./
 
 # Inicia conexão com bancos de dados
 RUN npx prisma generate --schema=prisma/postgres.prisma
-RUN npx prisma generate --schema=prisma/mongo.prisma
 
 # Instala dependências
 RUN npm install
