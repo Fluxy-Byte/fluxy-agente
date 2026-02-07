@@ -8,7 +8,7 @@ import { getAnwser } from "../../adapters/tools/getAnwser";
 export async function HandleReceptiveWebhook(task: MetaWebhook) {
     try {
 
-        const MENSAGM_DEFAULT = process.env.MENSAGM_DEFAULT ?? "Tivemos um erro inesperado no momento. Tente novamente mais a tarde!\n\nA Fluxy agradece o contato! 💜"
+        const MENSAGM_DEFAULT = process.env.MENSAGM_DEFAULT ?? "😔 Ops! Tivemos um pequeno imprevisto no momento.\nPedimos que tente novamente mais tarde.\n\n📞 Se for urgente, fale com a gente pelo número: +55 11 3164-7487\n\nA Gamefic agradece seu contato! 💙😊"
 
         const mensagem = task.entry[0];
         const dadosDaMesagen = mensagem.changes[0];

@@ -2,6 +2,7 @@
 
 import { getConectionTheChannel } from '../../infra/rabbitMQ/conection';
 import { sendCampaing } from "../../adapters/meta/sendCampaing";
+import { handleHistoricoDeConversa } from "../tools/handleHistoricoDeConversa"
 
 interface Payload {
   numbers: Numbers[],
@@ -63,15 +64,15 @@ export async function startTaskWorkerCampaign() {
 
         const type = bodyCampaign.type
 
-        await sendCampaing(dataToSend);
+        let result = await sendCampaing(dataToSend);
+
+        handleHistoricoDeConversa(contact.phone, bodyCampaign.template_name, "template", "oi", String(new Date()), 'enviado')
       }
 
       console.log('🛠 Executando tarefa');
       console.log(JSON.stringify(bodyCampaign));
-      let responseSendCampaing =
 
-        // console.log(responseSendCampaing);
-        console.log('✅ Tarefa concluída')
+      console.log('✅ Tarefa concluída')
       channel.ack(msg)
     } catch (err) {
       console.log('❌ Falhou, jogando pra DLQ');

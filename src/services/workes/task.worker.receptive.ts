@@ -1,8 +1,6 @@
-import { contato } from "../../infra/dataBase/contacts";
-import type { User } from "../../infra/dataBase/contacts";
+import { handleHistoricoDeConversa } from "../tools/handleHistoricoDeConversa"
 import { getConectionTheChannel } from '../../infra/rabbitMQ/conection';
 import type { MetaWebhook } from '../interfaces/MetaWebhook';
-import { criarHistoricoDeConversa } from "../../infra/dataBase/messages"
 
 export async function startTaskWorkerReceptive() {
     const channel = getConectionTheChannel()
@@ -28,7 +26,7 @@ export async function startTaskWorkerReceptive() {
         const repostaEnviada: string = body.resposta
 
         try {
-            console.log('\n---------💜 Processando de alimentação da base começando---------\n');
+            console.log('\n---------💙 Processando de alimentação da base começando---------\n');
 
             const mensagem = task.entry[0];
             const dadosDaMesagen = mensagem.changes[0];
@@ -42,30 +40,14 @@ export async function startTaskWorkerReceptive() {
                 const mensagemRecebida = dadosDoBodyDaMensagem?.text?.body || "Não indentificada";
                 const tipoDaMensagem = dadosDoBodyDaMensagem?.type || false; // Pode ser text ou audio
                 const timesTampMensagem = dadosDoBodyDaMensagem.timestamp; // Pode ser text ou audio
-                const idMensagem = dadosDoBodyDaMensagem?.id || false;
                 const numeroDoContato = dadosDoBodyDaMensagem?.from || false;
 
-                if (idMensagem && numeroDoContato) {
+                if (numeroDoContato) {
 
-                    let respostaParaMensagem = repostaEnviada ?? "Tivemos um erro inesperado no momento. Tente novamente mais a tarde!\n\nA Fluxy agradece o contato! 💜";
-                    const usuario = await contato(numeroDoContato);
-
-                    if (usuario.user) {
-
-                        console.log(usuario.user)
-                        const dadosUser: User = usuario.user
-                        await criarHistoricoDeConversa(
-                            dadosUser.id,
-                            tipoDaMensagem,
-                            mensagemRecebida,
-                            respostaParaMensagem,
-                            String(new Date(Number(timesTampMensagem) * 1000)),
-                            "enviado",
-                        )
-                    }
+                    handleHistoricoDeConversa(numeroDoContato, repostaEnviada, tipoDaMensagem, mensagemRecebida, String(new Date(Number(timesTampMensagem) * 1000)), 'enviado')
 
                 }
-                console.log('\n---------💜 Processamento de alimentação da base concluído---------\n');
+                console.log('\n---------💙 Processamento de alimentação da base concluído---------\n');
             }
 
             // ======================
@@ -80,7 +62,7 @@ export async function startTaskWorkerReceptive() {
                     console.log(status);
                 });
 
-                console.log('💜 Atualização de status concluída');
+                console.log('💙 Atualização de status concluída');
             }
 
             channel.ack(msg);
