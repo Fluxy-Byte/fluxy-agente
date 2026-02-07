@@ -17,10 +17,10 @@ COPY . .
 RUN npx prisma generate --schema=prisma/postgres.prisma
 
 # Compila o TypeScript
-RUN npm run build
+# RUN npm run dev
 
 # Expõe a porta do Express (mude se usar outra)
 EXPOSE 5096
 
 # Inicia a aplicação
-CMD ["npm", "start"] 
+CMD ["npm", "run", "dev"] 
