@@ -36,7 +36,7 @@ export async function startTaskWorkerReceptive() {
             if (dadosDaMesagen.value.messages) {
 
                 const bodyDaMenssage = dadosDaMesagen.value.messages;
-                const profileContact = dadosDaMesagen.value.contacts?.[0];
+                //const profileContact = dadosDaMesagen.value.contacts?.[0]; // Nome no perfil
                 const dadosDoBodyDaMensagem = bodyDaMenssage?.[0];
 
                 const mensagemRecebida = dadosDoBodyDaMensagem?.text?.body || "Não indentificada";
@@ -48,7 +48,7 @@ export async function startTaskWorkerReceptive() {
                 if (idMensagem && numeroDoContato) {
 
                     let respostaParaMensagem = repostaEnviada ?? "Tivemos um erro inesperado no momento. Tente novamente mais a tarde!\n\nA Fluxy agradece o contato! 💜";
-                    const usuario = await contato(profileContact?.profile.name ?? "Sem nome no perfil", numeroDoContato);
+                    const usuario = await contato(numeroDoContato);
 
                     if (usuario.user) {
 

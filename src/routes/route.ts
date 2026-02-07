@@ -3,7 +3,7 @@ import swaggerUi from "swagger-ui-express";
 import { createTaskCampaign } from "../services/producers/task.producer.campaign"// Criar task para campanhas
 // import { buscarTodasAsMensagens } from "../config/database/entities/mensagems";
 import { HandleReceptiveWebhook } from "../services/handleMessages/handleReceptiveWebhook";
-import { contatoTeste } from "../infra/dataBase/contacts"
+
 const routes = express();
 
 routes.use(express.json());
@@ -48,18 +48,6 @@ routes.post("/api/v1/receptive/webhook", async (req: any, res: any) => {
     }
 })
 
-
-// Receber mensagens e alteração de status do webhook da meta
-routes.post("/api/v1/receptive/teste", async (req: any, res: any) => {
-    try {
-        const { phone, name } = req.body
-        const result = await contatoTeste(name, phone)
-        return res.status(result.status == true ? 200 : 400).json(result.user);
-    } catch (e) {
-        console.log("❌ Erro ao tentar criar mensagem na fila POST-/api/v1/receptive/webhook: " + e)
-        res.status(500).end();
-    }
-})
 
 // Receber mensagens ativas para disparo
 routes.post("/api/v1/campaign", async (req: any, res: any) => {

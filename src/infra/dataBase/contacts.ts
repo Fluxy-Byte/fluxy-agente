@@ -11,76 +11,43 @@ export interface User {
 }
 
 async function verificandoExistencia(phone: string) {
-    const result = await prisma.user.findMany({
+    return await prisma.user.findFirst({
         where: {
             phone
         }
     })
-
-    return {
-        status: result.length > 0,
-        user: result[0] ?? {}
-    };
 }
 
-async function criarUsuario(name: string, phone: string) {
-    const result = await prisma.user.create({
+async function criarUsuario(phone: string) {
+    return await prisma.user.create({
         data: {
-            name,
             phone
         }
     })
-
-    return {
-        status: result ? true : false,
-        user: result ?? {}
-    };
 }
 
-
-export async function contato(name: string, phone: string) {
+export async function contato(phone: string) {
     try {
-        let user: User;
+        let user = await verificandoExistencia(phone);
 
-        let consulta = await verificandoExistencia(phone);
-        if (consulta.user) {
-            user = consulta.user;
-        } else {
-            let resultCreate = await criarUsuario(name, phone);
-            user = resultCreate.user;
+        if (!user) {
+            user = await criarUsuario(phone);
         }
 
         return {
-            status: user ? true : false,
+            status: true,
             user
-        }
-    }
+        };
 
-    catch (e) {
-        console.log(`Erro ao gerar ususario: ${e}`);
+    } catch (e) {
+        console.error('Erro ao gerar usuário:', e);
+
         return {
             status: false,
-        }
+            user: null
+        };
     }
 }
 
-export async function contatoTeste(name: string, phone: string) {
-    try {
-        let user: User;
-        let resultCreate = await criarUsuario(name, phone);
-        user = resultCreate.user;
 
-        return {
-            status: user ? true : false,
-            user
-        }
-    }
-
-    catch (e) {
-        console.log(`Erro ao gerar ususario: ${e}`);
-        return {
-            status: false,
-        }
-    }
-}
 
