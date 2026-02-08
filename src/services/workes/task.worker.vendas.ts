@@ -25,7 +25,7 @@ export async function startTaskWorkerCampaign() {
     if (!msg) return
 
     const bodyVendas: Task = JSON.parse(msg.content.toString())
-
+    console.log("🟠 Body recebido: " + bodyVendas)
     try {
       if (!bodyVendas.dados.telefone) {
         console.log('❌ Tarefa não concluida pois não tem numero para disparo');
@@ -146,22 +146,3 @@ export async function startTaskWorkerCampaign() {
     }
   })
 }
-
-
-
-// {
-//   "type": "text",
-//     "body": {
-//     "messaging_product": "whatsapp",
-//       "recipient_type": "individual",
-//         "to": "",
-//           "type": "template",
-//             "template": {
-//       "name": "boas_vindas_poup",
-//         "language": {
-//         "code": "pt_BR"
-//       },
-//       "components": []
-//     }
-//   }
-// }
