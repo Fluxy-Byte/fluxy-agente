@@ -84,7 +84,7 @@ routes.post("/api/v1/campaign", async (req: any, res: any) => {
 routes.post("/api/v1/vendas", async (req: any, res: any) => {
     try {
         const bodyToCampaing: any = req.body;
-        if (!bodyToCampaing.template_name || !bodyToCampaing.dados) {
+        if (!bodyToCampaing.name_template || !bodyToCampaing.dados) {
             return res.status(401).json({
                 status: false,
                 message: "Erro ao inserir na fila de disparo pois esta faltando dados no corpo da req.",
