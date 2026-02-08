@@ -5,11 +5,11 @@ import { sendCampaing } from "../../adapters/microsservico/sendCampaing";
 import { handleHistoricoDeConversa } from "../tools/handleHistoricoDeConversa"
 import { Task, LeadError, LeadRegister } from "../producers/task.producer.vendas"
 
-export async function startTaskWorkerCampaign() {
+export async function startTaskWorkerVendas() {
   const channel = getConectionTheChannel()
   const nomeFila = process.env.NOME_FILA_RABBITMQ ?? "fluxy";
-  const queue = `task.${nomeFila}.ativos.create`
-  const dlq = `task.${nomeFila}.ativos.dlq`
+  const queue = `task.${nomeFila}.vendas.create`
+  const dlq = `task.${nomeFila}.vendas.dlq`
 
   await channel.assertQueue(dlq, { durable: true })
 

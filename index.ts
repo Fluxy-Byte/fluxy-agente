@@ -3,17 +3,19 @@ import routes from "./src/routes/route";
 import { connectRabbit } from "./src/infra/rabbitMQ/conection";
 import { startTaskWorkerCampaign } from './src/services/workes/task.worker.campaign';
 import { startTaskWorkerReceptive } from './src/services/workes/task.worker.receptive';
+import { startTaskWorkerVendas } from './src/services/workes/task.worker.vendas';
 import { connectMongo } from './src/infra/dataBase/messages';
-import { PrismaClient } from "./generated/prisma/client";
+
 
 const PORT = process.env.PORT || 3000;
 
 async function start() {
   try {
-    
+
     await connectRabbit();
     await startTaskWorkerCampaign();
     await startTaskWorkerReceptive();
+    await startTaskWorkerVendas()
     await connectMongo();
   } catch (e) {
     console.log(e)
