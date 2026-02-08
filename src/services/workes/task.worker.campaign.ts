@@ -12,7 +12,8 @@ interface Payload {
 
 interface Numbers {
   phone: string,
-  parameters: any[]
+  parametersBody: any[]
+  parametersHeader: any[]
 }
 
 export async function startTaskWorkerCampaign() {
@@ -45,26 +46,40 @@ export async function startTaskWorkerCampaign() {
 
       for (let i = 0; i < bodyCampaign.numbers.length; i++) {
         let contact = bodyCampaign.numbers[i];
-        const dataToSend = {
-          "type": bodyCampaign.type,
-          "body": {
-            "messaging_product": "whatsapp",
-            "recipient_type": "individual",
-            "to": contact.phone,
-            "type": "template",
-            "template": {
-              "name": bodyCampaign.template_name,
-              "language": {
-                "code": "pt_BR"
-              },
-              "components": contact.parameters
-            }
+
+        const parametros = contact.parametersHeader.length > 0 ? [
+          {
+            "type": "header",
+            "parameters": contact.parametersHeader
+          },
+          {
+            "type": "body",
+            "parameters": contact.parametersBody
           }
-        }
+        ] : [
+          {
+            "type": "body",
+            "parameters": contact.parametersBody
+          }
+        ]
 
-        const type = bodyCampaign.type
+        const dataToSend = {
+          messaging_product: "whatsapp",
+          to: contact.phone,
+          type: "template",
 
-        let result = await sendCampaing(dataToSend);
+          template: {
+            name: bodyCampaign.template_name,
+
+            language: {
+              code: "pt_BR"
+            },
+
+            components: parametros
+          }
+        };
+
+        await sendCampaing(dataToSend);
 
         handleHistoricoDeConversa(contact.phone, bodyCampaign.template_name, "template", "oi", String(new Date()), 'enviado')
       }
@@ -80,22 +95,3 @@ export async function startTaskWorkerCampaign() {
     }
   })
 }
-
-
-
-// {
-//   "type": "text",
-//     "body": {
-//     "messaging_product": "whatsapp",
-//       "recipient_type": "individual",
-//         "to": "",
-//           "type": "template",
-//             "template": {
-//       "name": "boas_vindas_poup",
-//         "language": {
-//         "code": "pt_BR"
-//       },
-//       "components": []
-//     }
-//   }
-// }

@@ -1,6 +1,7 @@
 import express from "express";
 import swaggerUi from "swagger-ui-express";
 import { createTaskCampaign } from "../services/producers/task.producer.campaign"// Criar task para campanhas
+import { createTaskVendas } from "../services/producers/task.producer.vendas"// Criar task para campanhas
 // import { buscarTodasAsMensagens } from "../config/database/entities/mensagems";
 import { HandleReceptiveWebhook } from "../services/handleMessages/handleReceptiveWebhook";
 
@@ -70,7 +71,36 @@ routes.post("/api/v1/campaign", async (req: any, res: any) => {
             error: ""
         })
     } catch (e) {
-        console.log("❌ Erro ao tentar criar campaign na fila POST-/api/v1/campaign/webhook: " + e)
+        console.log("❌ Erro ao tentar criar campaign na fila POST-/api/v1/campaign: " + e)
+        res.status(500).json({
+            status: false,
+            message: "Erro ao inserir na fila de disparo.",
+            error: JSON.stringify(e)
+        });
+    }
+})
+
+// Receber mensagens ativas para disparo
+routes.post("/api/v1/vendas", async (req: any, res: any) => {
+    try {
+        const bodyToCampaing: any = req.body;
+        if (!bodyToCampaing.template_name || !bodyToCampaing.dados) {
+            return res.status(401).json({
+                status: false,
+                message: "Erro ao inserir na fila de disparo pois esta faltando dados no corpo da req.",
+                error: ""
+            });
+        }
+
+        await createTaskVendas(bodyToCampaing);
+
+        return res.status(200).json({
+            status: true,
+            message: "Venda inserida na fila de disparo com sucesso.",
+            error: ""
+        })
+    } catch (e) {
+        console.log("❌ Erro ao tentar criar venda na fila POST-/api/v1/vendas: " + e)
         res.status(500).json({
             status: false,
             message: "Erro ao inserir na fila de disparo.",
